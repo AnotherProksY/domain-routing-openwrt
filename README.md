@@ -177,7 +177,7 @@ service getdomains start
 
 ## Выбор страны
 Выбор списка доменов.
-Для **county** три [возможных значения](https://github.com/itdoginfo/allow-domains):
+Для **county** три [возможных значения](https://github.com/AnotherProksY/allow-domains):
 - russia-inside
 - russia-outside
 - ukraine
