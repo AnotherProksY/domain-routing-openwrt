@@ -47,67 +47,68 @@ add_mark() {
 }
 
 add_tunnel() {
-    echo "We can automatically configure only Wireguard and Amnezia WireGuard. OpenVPN, Sing-box(Shadowsocks2022, VMess, VLESS, etc) and tun2socks will need to be configured manually"
-    echo "Select a tunnel:"
-    echo "1) WireGuard"
-    echo "2) OpenVPN"
-    echo "3) Sing-box"
-    echo "4) tun2socks"
-    echo "5) wgForYoutube"
-    echo "6) Amnezia WireGuard"
-    echo "7) Amnezia WireGuard For Youtube"
-    echo "8) Skip this step"
+    # echo "We can automatically configure only Wireguard and Amnezia WireGuard. OpenVPN, Sing-box(Shadowsocks2022, VMess, VLESS, etc) and tun2socks will need to be configured manually"
+    # echo "Select a tunnel:"
+    # echo "1) WireGuard"
+    # echo "2) OpenVPN"
+    # echo "3) Sing-box"
+    # echo "4) tun2socks"
+    # echo "5) wgForYoutube"
+    # echo "6) Amnezia WireGuard"
+    # echo "7) Amnezia WireGuard For Youtube"
+    # echo "8) Skip this step"
 
-    while true; do
-    read -r -p '' TUNNEL
-        case $TUNNEL in 
+    # while true; do
+    # read -r -p '' TUNNEL
+    #     case $TUNNEL in 
 
-        1) 
-            TUNNEL=wg
-            break
-            ;;
+    #     1) 
+    #         TUNNEL=wg
+    #         break
+    #         ;;
 
-        2)
-            TUNNEL=ovpn
-            break
-            ;;
+    #     2)
+    #         TUNNEL=ovpn
+    #         break
+    #         ;;
 
-        3) 
-            TUNNEL=singbox
-            break
-            ;;
+    #     3) 
+    #         TUNNEL=singbox
+    #         break
+    #         ;;
 
-        4) 
-            TUNNEL=tun2socks
-            break
-            ;;
+    #     4) 
+    #         TUNNEL=tun2socks
+    #         break
+    #         ;;
 
-        5) 
-            TUNNEL=wgForYoutube
-            break
-            ;;
+    #     5) 
+    #         TUNNEL=wgForYoutube
+    #         break
+    #         ;;
 
-        6) 
-            TUNNEL=awg
-            break
-            ;;
+    #     6) 
+    #         TUNNEL=awg
+    #         break
+    #         ;;
 
-        7) 
-            TUNNEL=awgForYoutube
-            break
-            ;;
+    #     7) 
+    #         TUNNEL=awgForYoutube
+    #         break
+    #         ;;
 
-        8)
-            echo "Skip"
-            TUNNEL=0
-            break
-            ;;
+    #     8)
+    #         echo "Skip"
+    #         TUNNEL=0
+    #         break
+    #         ;;
 
-        *)
-            echo "Choose from the following options"
-            ;;
-        esac
-    done
+    #     *)
+    #         echo "Choose from the following options"
+    #         ;;
+    #     esac
+    # done
+    TUNNEL=singbox
 
     if [ "$TUNNEL" == 'wg' ]; then
         printf "\033[32;1mConfigure WireGuard\033[0m\n"
@@ -208,16 +209,48 @@ cat << 'EOF' > /etc/sing-box/config.json
       "inet4_address": "172.16.250.1/30",
       "auto_route": false,
       "strict_route": false,
-      "sniff": true 
-   }
+      "sniff": true
+    }
   ],
   "outbounds": [
     {
-      "type": "$TYPE",
-      "server": "$HOST",
-      "server_port": $PORT,
-      "method": "$METHOD",
-      "password": "$PASS"
+      "domain_strategy": "",
+      "packet_encoding": "",
+      "type": "vless",
+      "tag": "",
+      "server": "",
+      "server_port": 443,
+      "uuid": "",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "",
+          "short_id": ""
+        }
+      }
+    },
+    {
+      "tag": "direct",
+      "type": "direct"
+    },
+    {
+      "tag": "bypass",
+      "type": "direct"
+    },
+    {
+      "tag": "block",
+      "type": "block"
+    },
+    {
+      "tag": "dns-out",
+      "type": "dns"
     }
   ],
   "route": {
@@ -478,35 +511,36 @@ add_dns_resolver() {
     if [[ "$DISK" -lt 32 ]]; then 
         printf "\033[31;1mYour router a disk have less than 32MB. It is not recommended to install DNSCrypt, it takes 10MB\033[0m\n"
     fi
-    echo "Select:"
-    echo "1) No [Default]"
-    echo "2) DNSCrypt2 (10.7M)"
-    echo "3) Stubby (36K)"
+    # echo "Select:"
+    # echo "1) No [Default]"
+    # echo "2) DNSCrypt2 (10.7M)"
+    # echo "3) Stubby (36K)"
 
-    while true; do
-    read -r -p '' DNS_RESOLVER
-        case $DNS_RESOLVER in 
+    # while true; do
+    # read -r -p '' DNS_RESOLVER
+    #     case $DNS_RESOLVER in 
 
-        1) 
-            echo "Skiped"
-            break
-            ;;
+    #     1) 
+    #         echo "Skiped"
+    #         break
+    #         ;;
 
-        2)
-            DNS_RESOLVER=DNSCRYPT
-            break
-            ;;
+    #     2)
+    #         DNS_RESOLVER=DNSCRYPT
+    #         break
+    #         ;;
 
-        3) 
-            DNS_RESOLVER=STUBBY
-            break
-            ;;
+    #     3) 
+    #         DNS_RESOLVER=STUBBY
+    #         break
+    #         ;;
 
-        *)
-            echo "Choose from the following options"
-            ;;
-        esac
-    done
+    #     *)
+    #         echo "Choose from the following options"
+    #         ;;
+    #     esac
+    # done
+    DNS_RESOLVER=STUBBY
 
     if [ "$DNS_RESOLVER" == 'DNSCRYPT' ]; then
         if opkg list-installed | grep -q dnscrypt-proxy2; then
@@ -580,43 +614,44 @@ add_packages() {
 }
 
 add_getdomains() {
-    echo "Choose you country"
-    echo "Select:"
-    echo "1) Russia inside. You are inside Russia"
-    echo "2) Russia outside. You are outside of Russia, but you need access to Russian resources"
-    echo "3) Ukraine. uablacklist.net list"
-    echo "4) Skip script creation"
+    # echo "Choose you country"
+    # echo "Select:"
+    # echo "1) Russia inside. You are inside Russia"
+    # echo "2) Russia outside. You are outside of Russia, but you need access to Russian resources"
+    # echo "3) Ukraine. uablacklist.net list"
+    # echo "4) Skip script creation"
 
-    while true; do
-    read -r -p '' COUNTRY
-        case $COUNTRY in 
+    # while true; do
+    # read -r -p '' COUNTRY
+    #     case $COUNTRY in 
 
-        1) 
-            COUNTRY=russia_inside
-            break
-            ;;
+    #     1) 
+    #         COUNTRY=russia_inside
+    #         break
+    #         ;;
 
-        2)
-            COUNTRY=russia_outside
-            break
-            ;;
+    #     2)
+    #         COUNTRY=russia_outside
+    #         break
+    #         ;;
 
-        3) 
-            COUNTRY=ukraine
-            break
-            ;;
+    #     3) 
+    #         COUNTRY=ukraine
+    #         break
+    #         ;;
 
-        4) 
-            echo "Skiped"
-            COUNTRY=0
-            break
-            ;;
+    #     4) 
+    #         echo "Skiped"
+    #         COUNTRY=0
+    #         break
+    #         ;;
 
-        *)
-            echo "Choose from the following options"
-            ;;
-        esac
-    done
+    #     *)
+    #         echo "Choose from the following options"
+    #         ;;
+    #     esac
+    # done
+    COUNTRY=russia_inside
 
     if [ "$COUNTRY" == 'russia_inside' ]; then
         EOF_DOMAINS=DOMAINS=https://raw.githubusercontent.com/AnotherProksY/allow-domains/main/Russia/inside-dnsmasq-nfset.lst
